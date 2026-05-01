@@ -221,11 +221,27 @@ export default function App() {
     audio.preload = "auto";
     audio.volume = MUSIC_VOLUME;
 
+    const handleAudioError = () => {
+      if (musicUrlRef.current) return;
+      const fallbackUrl = createLoveLoopUrl();
+      musicUrlRef.current = fallbackUrl;
+      audio.src = fallbackUrl;
+      audio.load();
+    };
+
+    if (MUSIC_TRACK_URL) {
+      audio.addEventListener("error", handleAudioError);
+    }
+
     musicRef.current = audio;
     musicUrlRef.current = generatedMusicUrl;
     musicOffsetAppliedRef.current = false;
 
     return () => {
+      if (MUSIC_TRACK_URL) {
+        audio.removeEventListener("error", handleAudioError);
+      }
+
       if (keypadUnmountTimer.current) {
         window.clearTimeout(keypadUnmountTimer.current);
         keypadUnmountTimer.current = null;
@@ -260,6 +276,41 @@ export default function App() {
       setPinPopup(null);
       popupTimerRef.current = null;
     }, durationMs);
+  };
+
+  const applyMusicStartOffset = (audio) => {
+    const maxTime =
+      Number.isFinite(audio.duration) && audio.duration > 0
+        ? Math.max(0, audio.duration - 0.05)
+        : MUSIC_START_OFFSET_SECONDS;
+    const target = Math.min(MUSIC_START_OFFSET_SECONDS, maxTime);
+
+    try {
+      audio.currentTime = target;
+      musicOffsetAppliedRef.current = true;
+    } catch {
+      // Ignore seek failures when metadata is not ready.
+    }
+  };
+
+  const tryPlayMusic = () => {
+    const audio = musicRef.current;
+    if (!audio) return;
+
+    if (!musicOffsetAppliedRef.current) {
+      if (audio.readyState >= 1) {
+        applyMusicStartOffset(audio);
+      } else {
+        audio.addEventListener("loadedmetadata", () => applyMusicStartOffset(audio), {
+          once: true
+        });
+      }
+    }
+
+    const maybePromise = audio.play();
+    if (maybePromise && typeof maybePromise.catch === "function") {
+      maybePromise.catch(() => {});
+    }
   };
 
   useEffect(() => {
@@ -359,33 +410,7 @@ export default function App() {
     if (!audio) return;
 
     if (isRomanceMode) {
-      if (!musicOffsetAppliedRef.current) {
-        const applyOffset = () => {
-          const maxTime =
-            Number.isFinite(audio.duration) && audio.duration > 0
-              ? Math.max(0, audio.duration - 0.05)
-              : MUSIC_START_OFFSET_SECONDS;
-          const target = Math.min(MUSIC_START_OFFSET_SECONDS, maxTime);
-
-          try {
-            audio.currentTime = target;
-            musicOffsetAppliedRef.current = true;
-          } catch {
-            return;
-          }
-        };
-
-        if (audio.readyState >= 1) {
-          applyOffset();
-        } else {
-          audio.addEventListener("loadedmetadata", applyOffset, { once: true });
-        }
-      }
-
-      const maybePromise = audio.play();
-      if (maybePromise && typeof maybePromise.catch === "function") {
-        maybePromise.catch(() => {});
-      }
+      tryPlayMusic();
       return;
     }
 
@@ -435,6 +460,7 @@ export default function App() {
     }
 
     setIsOpen(true);
+    tryPlayMusic();
   };
 
   const handleEnvelopeKeyDown = (event) => {
