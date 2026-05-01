@@ -1,0 +1,11 @@
+node_modules
+dist
+.vercel
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Server local data logs
+server/data/location-logs.json
