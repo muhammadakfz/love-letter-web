@@ -40,30 +40,37 @@ const letterSections = [
     paragraphs: [
       "Aku pengen bisa deket sama kamu terus, berusaha buat jadi orang yang bisa kamu andelin dalam hal apapun. Aku mau berusaha jadi buat lebih baik lagi.",
       "Makasih... kemaren sudah doain aku, sudah support aku, dan sudah jadi tempat aku cerita. Aku sayang bangetttt sama kamu Fatimmm, dan aku harap kita bisa terus deket kayak gini terus yaa.......",
-      "Makasihhh sudah jadi rumah untuk cerita, tawa, dan doa-doaku. Aku sayang kamu, hari ini, besok, dan seterusnya❤️.",
+      "Makasihhh sudah jadi rumah untuk cerita, suka, tawa, dan doa-doaku. Aku sayang banget sama kamu, hari ini, nanti, besok, dan seterusnya❤️.",
       "— dari Fahrur yang suka banget ama Fatimmm"
     ]
   },
   {
-    title: "First Date Yuk? — Bagian 6",
+    title: "",
     paragraphs: [
-      "Kalau kamu berkenan, aku pengen ngajak kamu first date yang sederhana tapi hangat. Kita jalan santai, ngobrol banyak, dan nikmatin waktu berdua tanpa buru-buru.",
-      "Aku mau denger cerita kamu lebih lama, ketawa bareng kamu lebih sering, dan bikin momen pertama kita jadi kenangan yang manis.",
-      "Kalau kamu setuju, bilang iya yaa. Aku siap atur semuanya sebaik mungkin buat kamu."
+      "Kalau kamu mau aku pengen ngajak fatimm first date nihhh hehe 👉🏻👈🏻. Aku pengen kita jalan bareng, ngobrol sana sini, dan nikmatin waktu berdua aja🙃.",
+      "Aku mo dengerin cerita kamu lebih lama secara langsung, ketawa bareng kamu lebih sering, dan bikin momen pertama kita jadi kenangan yang manis anjayyyzzzz hahaha.",
+      "Kalau kamu mau, bilang mau yaa, gaboleh enggk. Kita atur bareng ntar."
     ]
   },
   {
-    title: "Rencana First Date — Bagian 7",
+    title: "Rencana First Date Kita",
     paragraphs: [
-      "Kalau jadi, kita ketemu besok: Sabtu, 2 Mei 2026.",
+      "Kalau jadi nihhh, kita ketemu besok yaww Sabtu, 2 Mei 2026.",
       "Jam 10.00, di rumah kamu.",
-      "Aku datang bawa hati paling siap buat momen pertama kita."
+      "Ntar aku jemput kamu yaa."
     ]
   },
   {
-    title: "Hitung Mundur Kita — Bagian 8",
+    title: "Countdown to Our Date",
     paragraphs: [
-      "Sebelum ketemu besok, kita hitung mundurnya bareng di sini yaa."
+      "Lama banget nihh😫"
+    ]
+  },
+  {
+    title: "",
+    paragraphs: [
+      "Makasih.... yaa.... uda baca surat ini sampai akhir 🤍 🥺.",
+      "Makasih juga uda jadi orang yang aku suka. Makasih uda dengerin aku dan jujur km bikin setiap hariku jadi jauh lebih hangat. Aku seneng banget bisa kenal kamu❤️."
     ]
   }
 ];
