@@ -481,6 +481,11 @@ h1 {
   animation: heartBeat 1050ms var(--ease-smooth) infinite;
 }
 
+.heart-inline {
+  will-change: transform;
+  filter: drop-shadow(0 1px 3px rgba(255, 79, 139, 0.22));
+}
+
 .letter-date-btn {
   min-width: 3.7rem;
   text-transform: none;
@@ -551,6 +556,10 @@ h1 {
   animation: floatUp 6s linear infinite;
   pointer-events: none;
   text-shadow: 0 0 10px rgba(255, 79, 139, 0.20);
+}
+
+.floating-heart-symbol {
+  display: inline-block;
 }
 
 .page-footer {

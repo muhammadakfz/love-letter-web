@@ -11,6 +11,8 @@ const MUSIC_SAMPLE_RATE = 44100;
 const MUSIC_LOOP_SECONDS = 12;
 const MUSIC_VOLUME = 0.34;
 const MUSIC_START_OFFSET_SECONDS = 2;
+const MUSIC_FADE_IN_MS = 880;
+const MUSIC_FADE_OUT_MS = 560;
 
 const letterSections = [
   {
@@ -96,6 +98,54 @@ const catOrnaments = [
   { id: "cat-4", icon: "🐈‍⬛", left: "82%", top: "73%", delay: "4.1s", size: "1.32rem", tilt: "-6deg" },
   { id: "paw-4", icon: "🐾", left: "72%", top: "86%", delay: "4.8s", size: "0.95rem", tilt: "8deg" }
 ];
+const HEART_EMOJI_SPLIT_REGEX = /(\u2764\uFE0F|💖|💕|💗|💘|💝|💞|💓|💟|🩷|🧡|💛|💚|💙|💜|🤍|🖤|💌|♥|\u2764)/g;
+const HEART_EMOJI_SET = new Set([
+  "❤️",
+  "💖",
+  "💕",
+  "💗",
+  "💘",
+  "💝",
+  "💞",
+  "💓",
+  "💟",
+  "🩷",
+  "🧡",
+  "💛",
+  "💚",
+  "💙",
+  "💜",
+  "🤍",
+  "🖤",
+  "💌",
+  "♥",
+  "❤"
+]);
+
+function renderTextWithHeartBeat(text, keyPrefix) {
+  const value = String(text ?? "");
+  const parts = value.split(HEART_EMOJI_SPLIT_REGEX);
+
+  if (parts.length === 1) {
+    return value;
+  }
+
+  return parts.map((part, index) => {
+    if (!HEART_EMOJI_SET.has(part)) {
+      return part;
+    }
+
+    return (
+      <span
+        key={`${keyPrefix}-heart-${index}`}
+        className="heart-beat heart-inline"
+        style={{ animationDelay: `${(index % 4) * 110}ms` }}
+      >
+        {part}
+      </span>
+    );
+  });
+}
 
 const createLoveLoopUrl = () => {
   const totalSamples = MUSIC_SAMPLE_RATE * MUSIC_LOOP_SECONDS;
@@ -186,6 +236,7 @@ export default function App() {
   const musicRef = useRef(null);
   const musicUrlRef = useRef("");
   const musicOffsetAppliedRef = useRef(false);
+  const musicFadeRafRef = useRef(null);
   const isRomanceMode = isUnlocked && isOpen;
   const currentSection = letterSections[sectionIndex];
   const currentSectionText = useMemo(
@@ -227,7 +278,7 @@ export default function App() {
     const audio = new Audio(MUSIC_TRACK_URL || generatedMusicUrl);
     audio.loop = true;
     audio.preload = "auto";
-    audio.volume = MUSIC_VOLUME;
+    audio.volume = 0;
 
     const handleAudioError = () => {
       if (musicUrlRef.current) return;
@@ -258,6 +309,11 @@ export default function App() {
       if (popupTimerRef.current) {
         window.clearTimeout(popupTimerRef.current);
         popupTimerRef.current = null;
+      }
+
+      if (musicFadeRafRef.current !== null) {
+        window.cancelAnimationFrame(musicFadeRafRef.current);
+        musicFadeRafRef.current = null;
       }
 
       if (musicRef.current) {
@@ -301,9 +357,57 @@ export default function App() {
     }
   };
 
+  const cancelMusicFade = () => {
+    if (musicFadeRafRef.current !== null) {
+      window.cancelAnimationFrame(musicFadeRafRef.current);
+      musicFadeRafRef.current = null;
+    }
+  };
+
+  const fadeMusicTo = (targetVolume, durationMs, options = {}) => {
+    const audio = musicRef.current;
+    if (!audio) return;
+
+    const { pauseOnComplete = false } = options;
+    const clampedTarget = Math.max(0, Math.min(1, targetVolume));
+    const startVolume = Number.isFinite(audio.volume) ? audio.volume : 0;
+
+    cancelMusicFade();
+
+    if (durationMs <= 0 || Math.abs(clampedTarget - startVolume) < 0.002) {
+      audio.volume = clampedTarget;
+      if (pauseOnComplete && clampedTarget <= 0.001) {
+        audio.pause();
+      }
+      return;
+    }
+
+    const startTime = performance.now();
+    const tick = (now) => {
+      const progress = Math.min(1, (now - startTime) / durationMs);
+      const eased = 1 - (1 - progress) ** 3;
+      audio.volume = startVolume + (clampedTarget - startVolume) * eased;
+
+      if (progress < 1) {
+        musicFadeRafRef.current = window.requestAnimationFrame(tick);
+        return;
+      }
+
+      musicFadeRafRef.current = null;
+      audio.volume = clampedTarget;
+      if (pauseOnComplete && clampedTarget <= 0.001) {
+        audio.pause();
+      }
+    };
+
+    musicFadeRafRef.current = window.requestAnimationFrame(tick);
+  };
+
   const tryPlayMusic = () => {
     const audio = musicRef.current;
     if (!audio) return;
+
+    cancelMusicFade();
 
     if (!musicOffsetAppliedRef.current) {
       if (audio.readyState >= 1) {
@@ -319,6 +423,8 @@ export default function App() {
     if (maybePromise && typeof maybePromise.catch === "function") {
       maybePromise.catch(() => {});
     }
+
+    fadeMusicTo(MUSIC_VOLUME, MUSIC_FADE_IN_MS);
   };
 
   useEffect(() => {
@@ -414,15 +520,8 @@ export default function App() {
   }, [isUnlocked, isOpen, isDateCountdownSection]);
 
   useEffect(() => {
-    const audio = musicRef.current;
-    if (!audio) return;
-
-    if (isRomanceMode) {
-      tryPlayMusic();
-      return;
-    }
-
-    audio.pause();
+    if (isRomanceMode) return;
+    fadeMusicTo(0, MUSIC_FADE_OUT_MS, { pauseOnComplete: true });
   }, [isRomanceMode]);
 
   const openKeypad = () => {
@@ -595,7 +694,12 @@ export default function App() {
               animationDelay: `${heart * 0.45}s`
             }}
           >
-            ♥
+            <span
+              className="heart-beat heart-inline floating-heart-symbol"
+              style={{ animationDelay: `${heart * 0.22}s` }}
+            >
+              ♥
+            </span>
           </span>
         ))}
       </div>
@@ -620,8 +724,8 @@ export default function App() {
 
       {pinPopup ? (
         <div className={`pin-popup ${pinPopup.type}`} role="status" aria-live="polite">
-          <p className="pin-popup-title">{pinPopup.title}</p>
-          <p className="pin-popup-message">{pinPopup.message}</p>
+          <p className="pin-popup-title">{renderTextWithHeartBeat(pinPopup.title, "popup-title")}</p>
+          <p className="pin-popup-message">{renderTextWithHeartBeat(pinPopup.message, "popup-message")}</p>
         </div>
       ) : null}
 
@@ -716,7 +820,7 @@ export default function App() {
                 key={`letter-content-${sectionIndex}`}
                 className={`letter-content ${isIntroSection ? "letter-content-intro" : ""}`}
               >
-                {visibleSectionText}
+                {renderTextWithHeartBeat(visibleSectionText, `letter-${sectionIndex}`)}
                 {shouldTypewriter && !isCurrentSectionComplete ? (
                   <span className="typing-cursor" aria-hidden="true">|</span>
                 ) : null}
@@ -734,7 +838,7 @@ export default function App() {
                   >
                     {isReadyIntroSection ? (
                       <>
-                        Siap <span className="heart-beat" aria-hidden="true">❤️</span>
+                        Siap <span className="heart-beat heart-inline" aria-hidden="true">❤️</span>
                       </>
                     ) : "Next"}
                   </button>
@@ -786,7 +890,9 @@ export default function App() {
         </div>
       </div>
 
-      <footer className="page-footer">Made with ❤️</footer>
+      <footer className="page-footer">
+        Made with <span className="heart-beat heart-inline" aria-hidden="true">❤️</span>
+      </footer>
     </main>
   );
 }
