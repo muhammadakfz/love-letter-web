@@ -22,25 +22,26 @@ const letterSections = [
     paragraphs: ["Jangan salting gitu dong😋"]
   },
   {
-    title: "Untuk Fatima — Bagian 3",
+    title: "Dear Fatima",
     paragraphs: [
-      "Aku nulis surat ini di malam yang tenang, sambil mikirin betapa beruntungnya aku bisa kenal kamu.",
-      "Kamu hadir dengan cara yang sederhana, tapi efeknya besar banget buat hidupku. Hari-hari yang tadinya biasa, jadi punya warna."
+      "Halooo Fatim, maaf aku lama bikinnya yaaa..... Sebenernya ini rencanaku dari lama, cuma akhir akhir ini lagi sibuk banget huhuhu",
+      "Akhirnya sekarang aku bisa duduk manis buat nulis surat ini buat kamu. Aku harap kamu suka yaa, karena aku bikin ini istimewa banget nihh buat kamu sayanggg❤️."
     ]
   },
   {
-    title: "Tentang Kita — Bagian 4",
+    title: "Tentang Kita",
     paragraphs: [
-      "Aku suka caramu dengerin, bahkan saat aku ngomong ngalor-ngidul. Kamu selalu bikin aku merasa cukup, tanpa harus jadi sempurna.",
-      "Kalau nanti kita ketemu hari yang capek atau rumit, aku pengen kita tetap saling pegang tangan dan ingat: kita satu tim."
+      "In the first place, waktu kita pertama ketemu, perasaanku bilang ke aku kalau kita itu bakal deket, dan yap ternyata bener haha 😆. Aku suka kamu di awal kita ketemu jujur dan sampe sekarang perasaan itu masih sama.",
+      "Aku suka dengerin cerita kamu, cerita hidup kamu, dan hal-hal kecil yang kamu share ke aku. Aku juga suka cara kamu ketawa, cara kamu senyum, dan apapun itu aku suka bangetttttt Fatimmmmmm🥰."
     ]
   },
   {
-    title: "Janji Kecilku — Bagian 5",
+    title: "Janji Kecilku",
     paragraphs: [
-      "Aku mau terus belajar jadi pasangan yang lebih baik buat kamu. Pelan-pelan, tapi konsisten. Bukan cuma ngomong sayang, tapi juga nunjukin lewat sikap setiap hari.",
-      "Terima kasih sudah jadi rumah untuk cerita, tawa, dan doa-doaku. Aku sayang kamu, hari ini, besok, dan seterusnya.",
-      "— Fahrur"
+      "Aku pengen bisa deket sama kamu terus, berusaha buat jadi orang yang bisa kamu andelin dalam hal apapun. Aku mau berusaha jadi buat lebih baik lagi.",
+      "Makasih... kemaren sudah doain aku, sudah support aku, dan sudah jadi tempat aku cerita. Aku sayang bangetttt sama kamu Fatimmm, dan aku harap kita bisa terus deket kayak gini terus yaa.......",
+      "Makasihhh sudah jadi rumah untuk cerita, tawa, dan doa-doaku. Aku sayang kamu, hari ini, besok, dan seterusnya❤️.",
+      "— dari Fahrur yang suka banget ama Fatimmm"
     ]
   },
   {
